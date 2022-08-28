@@ -1,0 +1,492 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "id": "f9c72ed2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "from matplotlib import pyplot as plt\n",
+    "from sklearn.ensemble import RandomForestClassifier\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "%matplotlib inline"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "id": "1505848c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "data = pd.read_csv('mnist_train.csv')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "id": "d17ac291",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>label</th>\n",
+       "      <th>1x1</th>\n",
+       "      <th>1x2</th>\n",
+       "      <th>1x3</th>\n",
+       "      <th>1x4</th>\n",
+       "      <th>1x5</th>\n",
+       "      <th>1x6</th>\n",
+       "      <th>1x7</th>\n",
+       "      <th>1x8</th>\n",
+       "      <th>1x9</th>\n",
+       "      <th>...</th>\n",
+       "      <th>28x19</th>\n",
+       "      <th>28x20</th>\n",
+       "      <th>28x21</th>\n",
+       "      <th>28x22</th>\n",
+       "      <th>28x23</th>\n",
+       "      <th>28x24</th>\n",
+       "      <th>28x25</th>\n",
+       "      <th>28x26</th>\n",
+       "      <th>28x27</th>\n",
+       "      <th>28x28</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>5</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>4</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>9</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>5 rows × 785 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   label  1x1  1x2  1x3  1x4  1x5  1x6  1x7  1x8  1x9  ...  28x19  28x20  \\\n",
+       "0      5    0    0    0    0    0    0    0    0    0  ...      0      0   \n",
+       "1      0    0    0    0    0    0    0    0    0    0  ...      0      0   \n",
+       "2      4    0    0    0    0    0    0    0    0    0  ...      0      0   \n",
+       "3      1    0    0    0    0    0    0    0    0    0  ...      0      0   \n",
+       "4      9    0    0    0    0    0    0    0    0    0  ...      0      0   \n",
+       "\n",
+       "   28x21  28x22  28x23  28x24  28x25  28x26  28x27  28x28  \n",
+       "0      0      0      0      0      0      0      0      0  \n",
+       "1      0      0      0      0      0      0      0      0  \n",
+       "2      0      0      0      0      0      0      0      0  \n",
+       "3      0      0      0      0      0      0      0      0  \n",
+       "4      0      0      0      0      0      0      0      0  \n",
+       "\n",
+       "[5 rows x 785 columns]"
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "data.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "id": "47aac6f6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "a = data.iloc[3,1:].values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "id": "55a2f616",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<matplotlib.image.AxesImage at 0x17b30f47250>"
+      ]
+     },
+     "execution_count": 23,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "a = a.reshape(28,28).astype ('uint8')\n",
+    "plt.imshow(a)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "id": "893756f8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_x = data.iloc[:,1:]\n",
+    "df_y = data.iloc[:,0]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "id": "03df8bf4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x_train, x_test, y_train, y_test = train_test_split(df_x, df_y, test_size = 0.2, random_state=4)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "id": "d42412ea",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "20379    4\n",
+       "53032    4\n",
+       "27005    7\n",
+       "30510    8\n",
+       "508      1\n",
+       "Name: label, dtype: int64"
+      ]
+     },
+     "execution_count": 27,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "y_train.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "id": "2c3e2cf3",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "rf = RandomForestClassifier(n_estimators=100)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "id": "c9b78357",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "RandomForestClassifier()"
+      ]
+     },
+     "execution_count": 32,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "rf.fit(x_train, y_train)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "id": "4ef1897d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pred = rf.predict(x_test)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "id": "10887950",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([2, 7, 6, ..., 6, 4, 2], dtype=int64)"
+      ]
+     },
+     "execution_count": 34,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "pred"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "id": "0644ff92",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "s = y_test.values\n",
+    "\n",
+    "count = 0\n",
+    "for i in range(len(pred)):\n",
+    "    if pred[i] == s[i]:\n",
+    "        count = count+1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "id": "8a24f4a1",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "11632"
+      ]
+     },
+     "execution_count": 36,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "count"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "id": "a82e9f0c",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "12000"
+      ]
+     },
+     "execution_count": 37,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(pred)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "id": "b246625f",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.9693333333333334"
+      ]
+     },
+     "execution_count": 39,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "11632/12000"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cd7990a3",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.12"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
